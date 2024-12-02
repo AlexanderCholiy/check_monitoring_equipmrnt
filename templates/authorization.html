@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization</title>
+    <link rel="shortcut icon" href="{{ static_url }}/images/favicon.png" type="image/x-icon">
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/authorization.css"> 
+    <style>
+        body {
+            background: url('{{ static_url }}/images/background.jpg') no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <form method="post" action="{{ prefix }}/token">
+            <h1>Авторизация</h1>
+        <div class="input-box">
+            <input type="email" placeholder="E-mail" id="useremail" name="useremail" value="{{ request.cookies.get('saved_useremail', '') }}" required>
+            <i class='bx bx-user'></i>
+        </div>
+        <div class="input-box">
+            <input type="password" placeholder="Password" id="password" name="password" value="{{ request.cookies.get('saved_password', '') }}" required>
+            <i class='bx bxs-lock-alt' id="hide-password"></i>
+        </div>
+        <div class="remember">
+            <label for=""><input type="checkbox" id="remember_me" name="remember_me" {% if request.cookies.get('remember_me') == 'true' %} checked {% endif %}>запомнить</label>
+            <p>{% if error %}{{ error }}{% endif %}</p>
+        </div>
+    
+        <button type="submit" class="btn">Войти</button>
+    
+        </form>
+    </div>
+    <script src="{{ static_url }}/js/hide_password.js"></script>
+</body>
+</html>
