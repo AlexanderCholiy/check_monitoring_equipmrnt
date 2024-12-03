@@ -1,0 +1,115 @@
+/* Стили для таблицы ближайших опор. */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--light-background-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: 
+        background-color var(--transition-value),
+        border-color var(--transition-value),
+        box-shadow var(--transition-value);
+}
+
+body.dark table {
+    background-color: var(--dark-background-color);
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+table caption {
+    text-align: center;
+    font-weight: 400;
+    font-size: 14px;
+    padding-bottom: 10px;
+    background-color: var(--light-add-background-color);
+    color: var(--light-color);
+    transition: background-color var(--transition-value), color var(--transition-value);
+}
+
+body.dark table caption {
+    background-color: var(--dark-add-background-color);
+    color: var(--dark-color);
+}
+
+thead {
+    background-color: var(--light-add-color);
+    color: var(--light-add-background-color);
+    transition: background-color var(--transition-value), color var(--transition-value);
+}
+
+body.dark thead {
+    background-color: var(--dark-add-color);
+    color: var(--dark-add-background-color);
+}
+
+/* th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid var(--dark-add-color);
+    transition: background-color var(--transition-value), color var(--transition-value), border-color var(--transition-value);
+} */
+
+/* body.dark th, body.dark td {
+    border-color: var(--light-add-color);
+} */
+
+/* tbody tr:nth-child(even) {
+    background-color: var(--light-background-color);
+} */
+
+/* tbody tr:nth-child(odd) {
+    background-color: var(--light-add-background-color);
+} */
+
+/* body.dark tbody tr:nth-child(even) {
+    background-color: var(--dark-background-color);
+} */
+
+/* body.dark tbody tr:nth-child(odd) {
+    background-color: var(--dark-add-background-color);
+} */
+
+/* tbody tr:hover {
+    background-color: var(--light-color);
+    cursor: pointer;
+    transition: background-color var(--transition-value);
+} */
+
+/* body.dark tbody tr:hover {
+    background-color: var(--dark-color);
+} */
+
+/* @media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead tr {
+        display: none;
+    }
+
+    tbody tr {
+        margin-bottom: 10px;
+        border-bottom: 2px solid var(--dark-add-color);
+        border-radius: 6px;
+    }
+
+    tbody td {
+        padding-left: 50%;
+        position: relative;
+    }
+
+    tbody td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        font-weight: bold;
+        color: var(--light-add-color);
+    }
+
+    body.dark tbody td:before {
+        color: var(--dark-add-color);
+    }
+} */

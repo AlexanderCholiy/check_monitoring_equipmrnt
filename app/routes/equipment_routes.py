@@ -1,5 +1,6 @@
 import os
 import sys
+from math import pi
 
 from fastapi import APIRouter, Request, Form, status
 from fastapi.responses import Response, HTMLResponse, RedirectResponse
@@ -22,7 +23,10 @@ static_url = web_settings.WEB_STATIC_URL
 directory: str = os.path.join(CURRENT_DIR, '..', '..', 'templates')
 templates = Jinja2Templates(directory=directory)
 
+POINTER_GPS = float | str
+POINTER_POLES = list[tuple]
 NULL_VALUE: str = 'NaN'
+EARTH_RADIUS: int = 6378100
 
 
 @router.get('/equipment', response_class=HTMLResponse)
@@ -44,7 +48,7 @@ async def get_equipment(response: Response, request: Request) -> Response:
         'counter_number_1': NULL_VALUE,
         'controller_number': '',
         'cabinet_number': '',
-        'status': 'unknown'
+        'equipment_status': 'unknown'
     }
     return templates.TemplateResponse('equipment.html', context)
 
@@ -101,13 +105,17 @@ async def equipment_post(
             ON md.ModemID = ct.CounterModem
         WHERE
             {query_filter}
-            AND md.ModemLevel IN (2, 102)
+            AND md.ModemLevel IN (2, 102);
         """
     )
 
     data_problem: bool = False
     two_counters: bool = False
     bad_status: bool = False
+    modem_lat: Optional[POINTER_GPS] = None
+    modem_long: Optional[POINTER_GPS] = None
+    gps_problem: bool = False
+    nearest_poles_data: Optional[POINTER_POLES] = None
 
     if not data:
         equipment_status: str = 'Нет данных'
@@ -133,6 +141,40 @@ async def equipment_post(
         else:
             bad_status = True
             equipment_status = 'OFFLINE'
+        modem_lat: POINTER_GPS = float(
+            data[0][5]) if data[0][5] else NULL_VALUE
+        modem_long: POINTER_GPS = float(
+            data[0][6]) if data[0][6] else NULL_VALUE
+
+    if modem_lat in {None, NULL_VALUE} or modem_long in {None, NULL_VALUE}:
+        gps_problem = True
+    else:
+        print(type(modem_lat))
+        print(modem_lat)
+        lat_start_rad: float = modem_lat * pi / 180
+        lon_start_rad: float = modem_long * pi / 180
+        nearest_poles_data = execution_query(
+            f"""
+            SELECT TOP 3
+                RTRIM(PoleID) AS PoleID,
+                {EARTH_RADIUS} * ACOS(
+                    SIN({lat_start_rad}) * SIN(Radians(PoleLatitude))
+                    + COS({lat_start_rad}) * COS(Radians(PoleLatitude))
+                    * COS(Radians(PoleLongtitude) - {lon_start_rad})
+                ) AS Distance
+            FROM MSys_Poles
+            WHERE {EARTH_RADIUS} * ACOS(
+                SIN({lat_start_rad}) * SIN(Radians(PoleLatitude))
+                + COS({lat_start_rad}) * COS(Radians(PoleLatitude))
+                * COS(Radians(PoleLongtitude) - {lon_start_rad})
+            ) BETWEEN 0 AND {EARTH_RADIUS}
+            ORDER BY Distance;
+            """
+        )
+        nearest_poles_data: POINTER_POLES = [
+            (row[0], round(row[1])) for row in nearest_poles_data
+        ]
+        print(nearest_poles_data)
 
     print(data)
 
@@ -149,6 +191,8 @@ async def equipment_post(
         'equipment_status': equipment_status,
         'data_problem': data_problem,
         'two_counters': two_counters,
-        'bad_status': bad_status
+        'bad_status': bad_status,
+        'gps_problem': gps_problem,
+        'nearest_poles_data': nearest_poles_data,
     }
     return templates.TemplateResponse('equipment.html', context)

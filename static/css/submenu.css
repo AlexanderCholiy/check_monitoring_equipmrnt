@@ -37,10 +37,15 @@ body.dark .submenu button {
 
 .submenu button:hover {
     color: var(--dark-red-color);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+    transform: 
+        color var(--transition-value),
+        box-shadow var(--transition-value);
 }
 
 body.dark .submenu button:hover {
-    color: var(--light-green-color);
+    color: var(--light-magenta-color);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
 

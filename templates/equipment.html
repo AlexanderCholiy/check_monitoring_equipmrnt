@@ -8,6 +8,7 @@ Equipment
 
 {% block extra_styles %}
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/equipment.css">
+<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/nearest_poles_table.css">
 {% endblock %}
 
 {% block body %}    
@@ -39,6 +40,25 @@ Equipment
                 <label for="pole-number">Шифр опоры:</label>
                 <input type="text" id="pole-number" name="pole_number" value="{{ pole_number }}" onchange="toggleInputs(this)" maxlength="16">
             </div>
+            {% if (cabinet_number or controller_number) and not data_problem and not (gps_problem) %}
+                <table>
+                    <caption>Ближайшие опоры:</caption>
+                    <thead>
+                        <tr>
+                            <th>Шифр опоры</th>
+                            <th>Расстояние, м</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in nearest_poles_data %}
+                            <tr>
+                                <td data-label="Шифр опоры">{{ row[0] }}</td>
+                                <td data-label="Расстояние, м">{{ row[1] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
         </div>
         <div class="right-part">
             <div class="field-group">
@@ -46,7 +66,9 @@ Equipment
                 <input type="text" id="cabinet-number" name="cabinet_number" value="{{ cabinet_number }}" oninput="validateForm()" maxlength="16">
             </div>
             <div class="status">
-                {% if data_problem %}
+                {% if not cabinet_number and not controller_number %}
+                    <p class="data-error">Введите номер шкафа и/или номер контроллера</p>
+                {% elif data_problem %}
                     <p class="data-error">{{ equipment_status }}</p>
                 {% else %}
                     <p>
@@ -56,8 +78,23 @@ Equipment
                         </span>
                     </p>
                 {% endif %}
+                {% if not data_problem and (controller_number or cabinet_number) %}
+                    <p>
+                        <span>GPS:</span>
+                        <span class="{% if gps_problem or bad_status %}status-bad{% else %}status-good{% endif %}">
+                            {% if gps_problem or bad_status %}
+                                UNDEFINED
+                            {% else %}
+                                OK
+                            {% endif %}
+                        </span>
+                    </p>
+                {% endif %}
             </div>
             <div class="submit-section">
+                <button type="button" id="refresh-button" title="Сбросить" onclick="location.href='{{ prefix }}/equipment'">
+                    <i class='bx bx-refresh'></i>
+                </button>
                 <button type="submit" id="submit-button">Отправить</button>
             </div>
         </div>
