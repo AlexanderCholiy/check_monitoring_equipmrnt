@@ -187,6 +187,35 @@ body.dark input.error:focus {
     outline-color: var(--dark-red-color); 
 }
 
+.data-error {
+    color: var(--light-red-color);
+    transition: color var(--transition-value);
+}
+
+body.dark .dara-error {
+    color: var(--dark-red-color);
+}
+
+.status-good {
+    color: var(--light-blue-color);
+    font-weight: 500;
+    transition: color var(--transition-value);  
+}
+
+body.dark .status-good {
+    color: var(--dark-green-color);
+}
+
+.status-bad {
+    color: var(--light-red-color);
+    font-weight: 500;
+    transition: color var(--transition-value);  
+}
+
+body.dark .status-bad {
+    color: var(--dark-red-color);
+}
+
 @media (max-width: 768px) {
     #rhu {
         flex-direction: column;

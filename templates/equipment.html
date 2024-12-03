@@ -15,27 +15,47 @@ Equipment
     <section id="rhu">
         <div class="left-part">
             <div class="field-container">
-                <div class="field-group">
-                    <label for="counter-number">Номер счётчика:</label>
-                    <input type="text" id="counter-number" name="counter-number" value="{{ counter-number }}" readonly>
-                </div>
+                {% if two_counters %}
+                    <div class="field-group">
+                        <label for="counter-number-1">Первый счётчик:</label>
+                        <input type="text" id="counter-number-1" name="counter_number_1" value="{{ counter_number_1 }}" readonly>
+                    </div>
+                    <div class="field-group">
+                        <label for="counter-number-2">Второй счётчик:</label>
+                        <input type="text" id="counter-number-2" name="counter_number_2" value="{{ counter_number_2 }}" readonly>
+                    </div>
+                {% else %}
+                    <div class="field-group">
+                        <label for="counter-number-1">Номер счётчика:</label>
+                        <input type="text" id="counter-number-1" name="counter_number_1" value="{{ counter_number_1 }}" readonly>
+                    </div>
+                {% endif %}
                 <div class="field-group">
                     <label for="controller-number">Номер контроллера:</label>
-                    <input type="text" id="controller-number" name="controller-number" value="{{ controller-number }}" oninput="validateForm()">
+                    <input type="text" id="controller-number" name="controller_number" value="{{ controller_number }}" oninput="validateForm()" maxlength="16">
                 </div>
             </div>
             <div class="field-group">
                 <label for="pole-number">Шифр опоры:</label>
-                <input type="text" id="pole-number" name="pole-number" value="{{ pole-number }}" onchange="toggleInputs(this)">
+                <input type="text" id="pole-number" name="pole_number" value="{{ pole_number }}" onchange="toggleInputs(this)" maxlength="16">
             </div>
         </div>
         <div class="right-part">
             <div class="field-group">
                 <label for="cabinet-number">Номер шкафа:</label>
-                <input type="text" id="cabinet-number" name="cabinet-number" value="{{ cabinet-number }}" oninput="validateForm()">
+                <input type="text" id="cabinet-number" name="cabinet_number" value="{{ cabinet_number }}" oninput="validateForm()" maxlength="16">
             </div>
             <div class="status">
-                <p>Статус: Работает</p>
+                {% if data_problem %}
+                    <p class="data-error">{{ equipment_status }}</p>
+                {% else %}
+                    <p>
+                        <span>Статус:</span>
+                        <span class="{% if bad_status %}status-bad{% else %}status-good{% endif %}">
+                            {{ equipment_status }}
+                        </span>
+                    </p>
+                {% endif %}
             </div>
             <div class="submit-section">
                 <button type="submit" id="submit-button">Отправить</button>

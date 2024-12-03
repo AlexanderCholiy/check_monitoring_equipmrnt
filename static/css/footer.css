@@ -48,7 +48,7 @@ body.dark .footer-container {
 
 .footer-links a {
     text-decoration: none;
-    color: var(--light-red-color);
+    color: var(--light-blue-color);
     font-size: 16px;
     padding: 8px 12px;
     transition: color var(--transition-value);
@@ -60,7 +60,7 @@ body.dark .footer-links a {
 
 .footer-links a:hover {
     text-decoration: underline; 
-    color: var(--light-blue-color);
+    color: var(--light-red-color);
 }
 
 body.dark .footer-links a:hover {

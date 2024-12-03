@@ -58,7 +58,7 @@ body.dark .top-menu a {
 }
 
 .top-menu a.active {
-    color: var(--light-red-color);
+    color: var(--light-blue-color);
 }
 
 body.dark .top-menu a.active {
@@ -72,7 +72,7 @@ body.dark .top-menu a.active {
 
 body.dark .top-menu a:hover {
     background-color: var(--light-background-color);
-    color: var(--light-green-color);
+    color: var(--light-magenta-color);
 }
 
 .top-menu button {
