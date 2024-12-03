@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap');
+
+:root {
+    --transition-value: 0.5s ease;
+
+    --light-background-color: white;
+    --light-add-background-color: rgb(245, 245, 245);
+    --light-color: black;
+    --light-add-color: rgb(30, 30, 30);
+
+    --dark-background-color: rgb(30, 30, 30);
+    --dark-add-background-color: black;
+    --dark-color: white;
+    --dark-add-color: rgb(225, 225, 225);
+    
+    --light-red-color: rgb(220, 20, 60);
+    --light-green-color: rgb(0, 165, 0);
+    --light-blue-color: rgb(65, 105, 225);
+    --light-yellow-color: rgb(255, 215, 0);
+    --light-magenta-color: rgb(155, 0, 155);
+    --light-cyan-color: rgb(0, 125, 125);
+
+    --dark-red-color: rgb(220, 20, 60);
+    --dark-green-color: rgb(0, 175, 76);
+    --dark-blue-color: rgb(65, 105, 225);
+    --dark-yellow-color: rgb(255, 215, 0);
+    --dark-magenta-color: rgb(125, 0, 175);
+    --dark-cyan-color: rgb(0, 100, 100);
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    font-family: "Tektur", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    background-color: var(--light-background-color);
+    color: var(--light-color);
+    transition: 
+        background-color var(--transition-value), 
+        color var(--transition-value);
+}
+
+body.dark {
+    background-color: var(--dark-background-color);
+    color: var(--dark-color);
+}
+
+/* WebKit-скроллбары (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-add-background-color);
+}
+
+body.dark::-webkit-scrollbar-track {
+    background: var(--dark-add-background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--light-add-color);
+    border-radius: 1px;
+}
+
+body.dark::-webkit-scrollbar-thumb {
+    background: var(--dark-add-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--light-color);
+}
+
+body.dark::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-color);
+}

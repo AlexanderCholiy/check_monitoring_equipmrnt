@@ -1,0 +1,50 @@
+.submenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--dark-background-color);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 8px 0;
+    z-index: 10;
+    display: none;
+}
+
+body.dark .submenu {
+    background-color: var(--light-background-color);
+    box-shadow: 0px 4px 6px rgba(255, 255, 255, 0.1);
+}
+
+.submenu.show {
+    display: block;
+}
+
+.submenu button {
+    background: none;
+    border: none;
+    color: var(--dark-color);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+body.dark .submenu button {
+    color: var(--light-color);
+}
+
+.submenu button:hover {
+    color: var(--dark-red-color);
+}
+
+body.dark .submenu button:hover {
+    color: var(--light-green-color);
+}
+
+
+/* Обертка для элемента с подменю */
+.has-submenu {
+    position: relative;
+}

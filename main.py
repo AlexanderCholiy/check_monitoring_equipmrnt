@@ -11,7 +11,8 @@ from settings.web_log_config import web_log_config
 from app.common.wrapper_execution_time import wrapper_execution_time
 
 from app.routes import (
-    authorization_routes
+    authorization_routes,
+    equipment_routes
 )
 
 
@@ -21,6 +22,7 @@ CURRENT_DIR: str = os.path.dirname(__file__)
 
 app = FastAPI(debug=False, title='MonitoringEquipment', version='0.1')
 app.include_router(authorization_routes.router)
+app.include_router(equipment_routes.router)
 app.mount(
     web_settings.WEB_STATIC_URL,
     StaticFiles(directory=os.path.join(CURRENT_DIR, 'static')),

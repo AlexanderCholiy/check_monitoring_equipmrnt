@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Иконки и фавикон-->
+    <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'>
+    <link rel="icon" type="image/png" href="{{ static_url }}/images/favicon.png" sizes="32x32">
+    <!-- Базовый стиль -->
+    <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/base.css">
+    <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/spinner_overlay.css">
+    <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/top_menu.css">
+    <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/footer.css">
+    <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/main.css">
+    <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/submenu.css">
+    <!-- Custom CSS -->
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <div id="spinner-overlay" class="spinner-overlay">
+        <div class="spinner"></div>
+    </div>
+    <header>
+        <nav class="top-menu">
+            <ul>
+                <li><a href="{{ prefix }}/equipment" class="active">Equipment</a></li>
+                <li>
+                    <button id="theme-toggle" title="Переключить тему">
+                        <i id="theme-icon" class="bx bxs-sun"></i>
+                    </button>
+                </li>
+                <li class="has-submenu">
+                    <button class="menu-trigger" title="{{ useremail }}">
+                        <i class='bx bx-user'></i>
+                    </button>
+                    <div class="submenu hidden">
+                        <button onclick="location.href='{{ prefix }}/logout'">Выйти</button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <p>© 2004-2024 Новые Башни</p>
+            </div>
+            <div class="footer-links">
+                <ul>
+                    <li><a href="{{ prefix }}/equipment">Equipment</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <button id="scroll-to-top" aria-label="Scroll to top">
+                <i class="bx bx-up-arrow-alt"></i> Top
+            </button>   
+        </div>
+    </footer>
+    <!-- Переключение темы и скрол на верх страницы -->
+    <script src="{{ static_url }}/js/theme_toggle.js" defer></script>
+    <script src="{{ static_url }}/js/scroll_to_top.js" defer></script>
+    <script src="{{ static_url }}/js/submenu_button.js" defer></script>
+    <!-- Custom JS -->
+    {% block extra_scripts %}{% endblock %}
+    <!-- Загрузка страницы -->
+    <script src="{{ static_url }}/js/spinner_overlay.js" defer></script>
+</body>
+</html>

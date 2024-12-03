@@ -38,7 +38,7 @@ async def index(
     token = request.cookies.get('access_token')
     if token:
         return RedirectResponse(
-            url=f'{prefix}/monitoring', status_code=status.HTTP_303_SEE_OTHER
+            url=f'{prefix}/equipment', status_code=status.HTTP_303_SEE_OTHER
         )
     return RedirectResponse(
         url=f'{prefix}/authorize', status_code=status.HTTP_303_SEE_OTHER
@@ -97,7 +97,7 @@ async def login_for_access_token(
     )
 
     response = RedirectResponse(
-        url=f'{prefix}/monitoring', status_code=status.HTTP_303_SEE_OTHER
+        url=f'{prefix}/equipment', status_code=status.HTTP_303_SEE_OTHER
     )
     cookie_time = web_settings.WEB_SECURITY_ACCESS_TOKEN_EXPIRE_SECONDS
     response.set_cookie(

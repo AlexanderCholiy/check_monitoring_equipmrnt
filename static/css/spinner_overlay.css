@@ -1,0 +1,43 @@
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--light-background-color, --light-color);
+    z-index: 9999;
+    transition: 
+        opacity var(--transition-value), 
+        visibility var(--transition-value);
+}
+.spinner-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 6px solid var(--light-add-color);
+    border-top-color: var(--light-blue-color);
+    border-radius: 50%;
+    animation: spin var(--transition-value) infinite;
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+body.dark .spinner-overlay {
+    background-color: var(--dark-background-color);
+}
+body.dark .spinner {
+    border-color: var(--dark-add-color);
+    border-top-color: var(--dark-magenta-color);
+}
