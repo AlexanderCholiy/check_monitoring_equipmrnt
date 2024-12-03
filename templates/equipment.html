@@ -7,38 +7,38 @@ Equipment
 
 
 {% block extra_styles %}
-<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/rhu.css">
+<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/equipment.css">
 {% endblock %}
 
 {% block body %}    
-<form id="rhu-form" method="POST" action="{{ prefix }}/equipment">
+<form id="rhu-form" method="POST" action="{{ prefix }}/equipment" onsubmit="return validateRequiredFields()">
     <section id="rhu">
         <div class="left-part">
             <div class="field-container">
                 <div class="field-group">
-                    <label for="meter-number">Номер счётчика:</label>
-                    <input type="text" id="meter-number" name="counter-number" value="12345" readonly>
+                    <label for="counter-number">Номер счётчика:</label>
+                    <input type="text" id="counter-number" name="counter-number" value="{{ counter-number }}" readonly>
                 </div>
                 <div class="field-group">
                     <label for="controller-number">Номер контроллера:</label>
-                    <input type="text" id="controller-number" name="controller-number" oninput="validateForm()">
+                    <input type="text" id="controller-number" name="controller-number" value="{{ controller-number }}" oninput="validateForm()">
                 </div>
             </div>
             <div class="field-group">
-                <label for="support-code">Шифр опоры:</label>
-                <input type="text" id="support-code" name="support-code" value="18765-11" onchange="toggleInputs(this)">
+                <label for="pole-number">Шифр опоры:</label>
+                <input type="text" id="pole-number" name="pole-number" value="{{ pole-number }}" onchange="toggleInputs(this)">
             </div>
         </div>
         <div class="right-part">
             <div class="field-group">
                 <label for="cabinet-number">Номер шкафа:</label>
-                <input type="text" id="cabinet-number" name="cabinet-number" oninput="validateForm()">
+                <input type="text" id="cabinet-number" name="cabinet-number" value="{{ cabinet-number }}" oninput="validateForm()">
             </div>
             <div class="status">
                 <p>Статус: Работает</p>
             </div>
             <div class="submit-section">
-                <button type="submit" id="submit-button" disabled>Отправить</button>
+                <button type="submit" id="submit-button">Отправить</button>
             </div>
         </div>
     </section>

@@ -37,5 +37,10 @@ async def equipment(response: Response, request: Request) -> Response:
         'prefix': prefix,
         'static_url': static_url,
         'useremail': user['useremail'],
+        'pole-number': 'NaN',
+        'counter-number': 'NaN',
+        'controller-number': '',
+        'cabinet-number': '',
+        'status': 'unknown',
     }
     return templates.TemplateResponse('equipment.html', context)

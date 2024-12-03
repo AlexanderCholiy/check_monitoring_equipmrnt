@@ -98,7 +98,7 @@ body.dark .field-group input {
     font-weight: 400;
 }
 
-#support-code {
+#pole-number {
     width: 100%;
 }
 
@@ -165,6 +165,26 @@ body.dark .submit-section button:disabled {
     background-color: var(--dark-add-background-color);
     color: #333;
     border-color:#333; 
+}
+
+input.error {
+    border-color: var(--light-red-color);
+    background-color: #ffe6e6; /* Светлый оттенок красного */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+input.error:focus {
+    outline-color: var(--light-red-color);
+}
+
+body.dark input.error {
+    border-color: var(--dark-red-color);
+    background-color: rgba(255, 0, 0, 0.1); 
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
+}
+
+body.dark input.error:focus {
+    outline-color: var(--dark-red-color); 
 }
 
 @media (max-width: 768px) {
