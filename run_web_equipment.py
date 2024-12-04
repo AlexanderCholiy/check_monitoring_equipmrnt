@@ -20,7 +20,7 @@ init(autoreset=True)
 
 CURRENT_DIR: str = os.path.dirname(__file__)
 
-app = FastAPI(debug=False, title='MonitoringEquipment', version='0.1')
+app = FastAPI(debug=False, title='MonitoringEquipment', version='1.0')
 app.include_router(authorization_routes.router)
 app.include_router(equipment_routes.router)
 app.mount(

@@ -12,7 +12,7 @@ class WebSettings:
     """Параметры подключения приложения и настройки безопасности."""
     WEB_HOST: str = os.getenv('WEB_HOST')
     WEB_PORT: int = int(os.getenv('WEB_PORT'))
-    WEB_PREFIX: str = '/my-prefix'
+    WEB_PREFIX: str = '/rhu-update'
     WEB_STATIC_URL: str = '/equipment-static'
     WEB_SECURITY_SECRET_KEY: str = os.getenv('WEB_SECURITY_SECRET_KEY')
     WEB_MIDDLEWARE_SECRET_KEY: str = os.getenv('WEB_MIDDLEWARE_SECRET_KEY')

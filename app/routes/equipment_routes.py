@@ -33,12 +33,20 @@ EARTH_RADIUS: int = 6378100
 async def get_equipment(response: Response, request: Request) -> Response:
     """Страница с формами для внесения информации об оборудовании."""
     token = request.cookies.get("access_token")
+
     if not token:
         return RedirectResponse(
             url=f'{prefix}/authorize?error=ваша сессия истекла',
             status_code=status.HTTP_303_SEE_OTHER
         )
+
     user = await get_current_user(token)
+    if not user:
+        return RedirectResponse(
+            url=f'{prefix}/authorize?error=пользователь не найден',
+            status_code=status.HTTP_303_SEE_OTHER
+        )
+
     context: dict = {
         'request': request,
         'prefix': prefix,
@@ -70,12 +78,20 @@ async def equipment_post(
 ) -> Response:
     """Обработка формы с POST-запросом."""
     token = request.cookies.get("access_token")
+
     if not token:
         return RedirectResponse(
             url=f'{prefix}/authorize?error=ваша сессия истекла',
             status_code=status.HTTP_303_SEE_OTHER
         )
+
     user = await get_current_user(token)
+    if not user:
+        return RedirectResponse(
+            url=f'{prefix}/authorize?error=пользователь не найден',
+            status_code=status.HTTP_303_SEE_OTHER
+        )
+
     counter_number_1 = counter_number_1.rstrip()
     counter_number_2 = counter_number_2.rstrip()
     controller_number = controller_number.rstrip()
@@ -167,7 +183,8 @@ async def equipment_post(
                     SIN({lat_start_rad}) * SIN(Radians(PoleLatitude))
                     + COS({lat_start_rad}) * COS(Radians(PoleLatitude))
                     * COS(Radians(PoleLongtitude) - {lon_start_rad})
-                ) AS Distance
+                ) AS Distance,
+                RTRIM(PoleOnAirDate) AS PoleOnAirDate
             FROM MSys_Poles
             WHERE {EARTH_RADIUS} * ACOS(
                 SIN({lat_start_rad}) * SIN(Radians(PoleLatitude))
@@ -178,7 +195,9 @@ async def equipment_post(
             """
         )
         nearest_poles_data: POINTER_POLES = [
-            (row[0], round(row[1])) for row in nearest_poles_data
+            (
+                row[0], round(row[1]), row[2] if row[2] else NULL_VALUE
+            ) for row in nearest_poles_data
         ]
 
     good_notification: bool = False
