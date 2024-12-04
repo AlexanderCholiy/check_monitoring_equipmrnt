@@ -34,7 +34,7 @@ def main():
         Fore.WHITE + Style.NORMAL
     ).strip()
 
-    if len(user_password) < 10:
+    if len(user_password) < 8:
         raise ValueError(
             Fore.GREEN + Style.BRIGHT +
             'Пароль должен содержать минимум 10 символов.'
