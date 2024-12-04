@@ -1,41 +1,28 @@
-function toggleInputs(supportCodeInput) {
-    const isFilled = supportCodeInput.value.trim() !== '';
-    const dependentInputs = document.querySelectorAll('#controller-number, #cabinet-number');
-    dependentInputs.forEach(input => {
-        input.disabled = isFilled;
-        if (isFilled) {
-            input.value = ''; // Очищаем зависимые поля
-        }
-    });
-    validateForm();
-}
-
-function validateForm() {
-    const controllerNumber = document.getElementById('controller-number').value.trim();
-    const cabinetNumber = document.getElementById('cabinet-number').value.trim();
-    const submitButton = document.getElementById('submit-button');
-    
-    // Разблокируем кнопку, если хотя бы одно из полей заполнено
-    submitButton.disabled = !(controllerNumber || cabinetNumber);
-}
-
 function validateRequiredFields() {
-    const controllerNumber = document.getElementById('controller-number').value.trim();
-    const cabinetNumber = document.getElementById('cabinet-number').value.trim();
+    const cabinetInput = document.getElementById('cabinet-number');
+    const controllerInput = document.getElementById('controller-number');
+    
+    const cabinetNumber = cabinetInput.value.trim();
+    const controllerNumber = controllerInput.value.trim();
+    
+    let isValid = true;
 
-    if (!controllerNumber && !cabinetNumber) {
-        // Подсказка для пользователя
-        alert("Пожалуйста, заполните хотя бы одно из полей: 'Номер контроллера' или 'Номер шкафа'.");
+    // Убираем классы ошибок
+    cabinetInput.classList.remove('error');
+    controllerInput.classList.remove('error');
+
+    if (!cabinetNumber && !controllerNumber) {
+        alert('Пожалуйста, введите номер шкафа или номер контроллера.');
+        isValid = false; // предотвращает отправку формы
         
-        // Подсветка полей, если ни одно не заполнено
-        document.getElementById('controller-number').classList.add('error');
-        document.getElementById('cabinet-number').classList.add('error');
-        return false; // Блокируем отправку формы
+        // Добавляем классы ошибок
+        cabinetInput.classList.add('error');
+        controllerInput.classList.add('error');
     }
 
-    // Убираем подсветку, если хотя бы одно поле заполнено
-    document.getElementById('controller-number').classList.remove('error');
-    document.getElementById('cabinet-number').classList.remove('error');
-    return true; // Разрешаем отправку формы
+    return isValid; // возвращаем результат валидации
 }
 
+function clearError(input) {
+    input.classList.remove('error'); // Убираем класс ошибки при вводе данных
+}

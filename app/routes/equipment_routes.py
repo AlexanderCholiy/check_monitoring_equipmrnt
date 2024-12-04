@@ -44,11 +44,12 @@ async def get_equipment(response: Response, request: Request) -> Response:
         'prefix': prefix,
         'static_url': static_url,
         'useremail': user['useremail'],
-        'pole_number': NULL_VALUE,
+        'db_pole_number': NULL_VALUE,
         'counter_number_1': NULL_VALUE,
         'controller_number': '',
         'cabinet_number': '',
-        'equipment_status': 'unknown'
+        'equipment_status': 'unknown',
+        'new_modem_pole': None,
     }
     return templates.TemplateResponse('equipment.html', context)
 
@@ -62,7 +63,9 @@ async def equipment_post(
         alias="counter_number_2", default=NULL_VALUE
     ),
     controller_number: str = Form(alias="controller_number"),
-    pole_number: str = Form(alias="pole_number"),
+    new_modem_pole: Optional[str] = Form(
+        alias="new_modem_pole", default=None
+    ),
     cabinet_number: str = Form(alias="cabinet_number")
 ) -> Response:
     """Обработка формы с POST-запросом."""
@@ -76,17 +79,18 @@ async def equipment_post(
     counter_number_1 = counter_number_1.rstrip()
     counter_number_2 = counter_number_2.rstrip()
     controller_number = controller_number.rstrip()
-    pole_number = pole_number.rstrip()
+    if new_modem_pole is not None:
+        new_modem_pole = new_modem_pole.rstrip()
     cabinet_number = cabinet_number.rstrip()
 
     if not controller_number:
-        query_filter = f'md.ModemCabinetSerial LIKE \'{cabinet_number}%\''
+        query_filter = f'ModemCabinetSerial LIKE \'{cabinet_number}%\''
     elif not cabinet_number:
-        query_filter = f'md.ModemSerial LIKE \'{controller_number}%\''
+        query_filter = f'ModemSerial LIKE \'{controller_number}%\''
     else:
         query_filter = (
-            f'(md.ModemSerial LIKE \'{controller_number}%\'' +
-            f'OR md.ModemCabinetSerial LIKE \'{cabinet_number}%\')'
+            f'(ModemSerial LIKE \'{controller_number}%\' ' +
+            f'OR ModemCabinetSerial LIKE \'{cabinet_number}%\')'
         )
 
     data = execution_query(
@@ -98,7 +102,8 @@ async def equipment_post(
             RTRIM(md.ModemCabinetSerial) AS ModemCabinetSerial,
             RTRIM(md.ModemStatus) AS ModemStatus,
             RTRIM(md.ModemLatitude) AS ModemLatitude,
-            RTRIM(md.ModemLongtitude) AS ModemLongtitude
+            RTRIM(md.ModemLongtitude) AS ModemLongtitude,
+            RTRIM(md.NewModemPole) AS NewModemPole
         FROM
             MSys_Modems AS md
             LEFT JOIN MSys_Counters AS ct
@@ -117,25 +122,28 @@ async def equipment_post(
     gps_problem: bool = False
     nearest_poles_data: Optional[POINTER_POLES] = None
 
+    db_pole_number: str = NULL_VALUE
+    counter_number_1: str = NULL_VALUE
+    db_new_modem_pole: str = None
+
     if not data:
         equipment_status: str = 'Нет данных'
-        pole_number: str = NULL_VALUE
-        counter_number_1: str = NULL_VALUE
         data_problem = True
     elif len(data) > 2:
         equipment_status: str = 'Уточните номер контроллера и/или номер шкафа'
-        pole_number: str = NULL_VALUE
-        counter_number_1: str = NULL_VALUE
         data_problem = True
     else:
         counter_number_1: str = data[0][0]
-        pole_number: str = data[0][1]
+        db_pole_number: str = data[0][1]
         controller_number: str = data[0][2]
         cabinet_number: str = data[0][3]
+        db_new_modem_pole: Optional[str] = data[0][7]
+
         if len(data) == 2:
             two_counters = True
             counter_number_2 = data[1][0]
         equipment_status: int = int(data[0][4])
+
         if equipment_status in (1000, 1004):
             equipment_status = 'ONLINE'
         else:
@@ -149,8 +157,6 @@ async def equipment_post(
     if modem_lat in {None, NULL_VALUE} or modem_long in {None, NULL_VALUE}:
         gps_problem = True
     else:
-        print(type(modem_lat))
-        print(modem_lat)
         lat_start_rad: float = modem_lat * pi / 180
         lon_start_rad: float = modem_long * pi / 180
         nearest_poles_data = execution_query(
@@ -174,16 +180,55 @@ async def equipment_post(
         nearest_poles_data: POINTER_POLES = [
             (row[0], round(row[1])) for row in nearest_poles_data
         ]
-        print(nearest_poles_data)
 
-    print(data)
+    good_notification: bool = False
+    pole_updated_message: Optional[str] = None
+
+    if new_modem_pole and not data_problem:
+        check_new_modem_pole = execution_query(
+            f"""
+            SELECT COUNT(*)
+            FROM MSys_Poles
+            WHERE PoleID LIKE '{new_modem_pole}%'
+            """
+        )[0][0]
+        if check_new_modem_pole == 1 and new_modem_pole != db_new_modem_pole:
+            execution_query(
+                f"""
+                UPDATE MSys_Modems
+                SET
+                    NewModemPole = (
+                        SELECT TOP 1 PoleID
+                        FROM Msys_Poles
+                        WHERE PoleID LIKE '{new_modem_pole}%'
+                    )
+                WHERE
+                    {query_filter}
+                    AND ModemLevel IN (2, 102);
+                """
+            )
+            db_new_modem_pole = execution_query(
+                f"""
+                SELECT TOP 1 RTRIM(PoleID)
+                FROM Msys_Poles
+                WHERE PoleID LIKE '{new_modem_pole}%'
+                """
+            )[0][0]
+            good_notification = True
+            pole_updated_message = 'Данные обновлены.'
+        elif check_new_modem_pole == 0:
+            pole_updated_message = f'Опора {new_modem_pole} отсутствует в БД'
+        elif check_new_modem_pole > 1:
+            pole_updated_message = (
+                f'Уточните новый шифр опоры: {new_modem_pole}'
+            )
 
     context: dict = {
         'request': request,
         'prefix': prefix,
         'static_url': static_url,
         'useremail': user['useremail'],
-        'pole_number': pole_number,
+        'db_pole_number': db_pole_number,
         'counter_number_1': counter_number_1,
         'counter_number_2': counter_number_2,
         'controller_number': controller_number,
@@ -194,5 +239,8 @@ async def equipment_post(
         'bad_status': bad_status,
         'gps_problem': gps_problem,
         'nearest_poles_data': nearest_poles_data,
+        'new_modem_pole': db_new_modem_pole,
+        'pole_updated_message': pole_updated_message,
+        'good_notification': good_notification,
     }
     return templates.TemplateResponse('equipment.html', context)

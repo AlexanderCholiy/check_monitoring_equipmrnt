@@ -10,6 +10,7 @@
     <!-- Базовый стиль -->
     <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/base.css">
     <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/spinner_overlay.css">
+    <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/notification.css">
     <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/top_menu.css">
     <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/footer.css">
     <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/main.css">
@@ -21,6 +22,7 @@
     <div id="spinner-overlay" class="spinner-overlay">
         <div class="spinner"></div>
     </div>
+    <div id="notification" class="notification hidden"></div>
     <header>
         <nav class="top-menu">
             <ul>
@@ -64,7 +66,10 @@
     <!-- Переключение темы и скрол на верх страницы -->
     <script src="{{ static_url }}/js/theme_toggle.js" defer></script>
     <script src="{{ static_url }}/js/scroll_to_top.js" defer></script>
+    <!-- Подменю -->
     <script src="{{ static_url }}/js/submenu_button.js" defer></script>
+    <!-- Уведомления -->
+    <script src="{{ static_url }}/js/notification.js" defer></script>
     <!-- Custom JS -->
     {% block extra_scripts %}{% endblock %}
     <!-- Загрузка страницы -->

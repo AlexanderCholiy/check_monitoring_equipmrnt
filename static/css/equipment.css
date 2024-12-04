@@ -60,13 +60,18 @@ body.dark .left-part, body.dark .right-part {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    width: 48%; /* Делит пространство поровну между инпутами */
+    width: 100%; /* Делит пространство поровну между инпутами */
 }
 
 .field-group {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    /* width: 100%; */
+}
+
+#cabinet-number {
+    width: auto;
 }
 
 .field-group label {
@@ -96,10 +101,6 @@ body.dark .field-group input {
     margin-block: 5px;
     font-size: 14px;
     font-weight: 400;
-}
-
-#pole-number {
-    width: 100%;
 }
 
 /* Соединение посередине */

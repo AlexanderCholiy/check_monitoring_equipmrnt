@@ -33,12 +33,20 @@ Equipment
                 {% endif %}
                 <div class="field-group">
                     <label for="controller-number">Номер контроллера:</label>
-                    <input type="text" id="controller-number" name="controller_number" value="{{ controller_number }}" oninput="validateForm()" maxlength="16">
+                    <input type="text" id="controller-number" name="controller_number" value="{{ controller_number }}" oninput="validateForm()" maxlength="20">
                 </div>
             </div>
-            <div class="field-group">
-                <label for="pole-number">Шифр опоры:</label>
-                <input type="text" id="pole-number" name="pole_number" value="{{ pole_number }}" onchange="toggleInputs(this)" maxlength="16">
+            <div class="field-container">
+                <div class="field-group">
+                    <label for="db-pole-number">Шифр опоры в БД:</label>
+                    <input type="text" id="db-pole-number" name="db_pole_number" value="{{ db_pole_number }}" readonly>
+                </div>
+                {% if not data_problem and (controller_number or cabinet_number) %}
+                    <div class="field-group">
+                        <label for="new-modem-pole">Новый шифр опоры:</label>
+                        <input type="text" id="new-modem-pole" name="new_modem_pole" value="{{ new_modem_pole or '' }}" onchange="toggleInputs(this)" maxlength="20">
+                    </div>
+                {% endif %}
             </div>
             {% if (cabinet_number or controller_number) and not data_problem and not (gps_problem) %}
                 <table>
@@ -63,7 +71,7 @@ Equipment
         <div class="right-part">
             <div class="field-group">
                 <label for="cabinet-number">Номер шкафа:</label>
-                <input type="text" id="cabinet-number" name="cabinet_number" value="{{ cabinet_number }}" oninput="validateForm()" maxlength="16">
+                <input type="text" id="cabinet-number" name="cabinet_number" value="{{ cabinet_number }}" oninput="validateForm()" maxlength="20">
             </div>
             <div class="status">
                 {% if not cabinet_number and not controller_number %}
@@ -104,4 +112,12 @@ Equipment
 
 {% block extra_scripts %}
 <script src="{{ static_url }}/js/send_equipment_form.js" defer></script>
+{% if pole_updated_message %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isGoodNotification = {{ 'true' if good_notification else 'false' }};
+            showNotification({{ pole_updated_message|tojson }}, isGoodNotification);
+        });
+    </script>
+{% endif %}
 {% endblock %}
