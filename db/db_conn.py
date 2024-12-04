@@ -9,11 +9,11 @@ from colorama import Fore, Style
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from settings.config import db_settings  # noqa: E402
 
-
+# На сервере 18 версия, у меня 17.
 SQLALCHEMY_DATABASE_URL_SERVER: str = (
     f'mssql+pyodbc://{db_settings.DB_USER}:{db_settings.DB_PSWD}' +
     f'@{db_settings.DB_HOST}:{db_settings.DB_PORT}/{db_settings.DB_NAME}' +
-    '?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes'
+    '?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes'
 )
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL_SERVER)

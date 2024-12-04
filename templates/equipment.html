@@ -12,7 +12,7 @@ Equipment
 {% endblock %}
 
 {% block body %}    
-<form id="rhu-form" method="POST" action="{{ prefix }}/equipment" onsubmit="return validateRequiredFields()">
+<form id="rhu-form" method="POST" action="{{ prefix }}/rhu" onsubmit="return validateRequiredFields()">
     <section id="rhu">
         <div class="left-part">
             <div class="field-container">
@@ -102,7 +102,7 @@ Equipment
                 {% endif %}
             </div>
             <div class="submit-section">
-                <button type="button" id="refresh-button" title="Сбросить" onclick="location.href='{{ prefix }}/equipment'">
+                <button type="button" id="refresh-button" title="Сбросить" onclick="location.href='{{ prefix }}/rhu'">
                     <i class='bx bx-refresh'></i>
                 </button>
                 <button type="submit" id="submit-button">Отправить</button>

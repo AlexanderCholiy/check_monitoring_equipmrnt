@@ -29,7 +29,7 @@ NULL_VALUE: str = 'NaN'
 EARTH_RADIUS: int = 6378100
 
 
-@router.get('/equipment', response_class=HTMLResponse)
+@router.get('/rhu', response_class=HTMLResponse)
 async def get_equipment(response: Response, request: Request) -> Response:
     """Страница с формами для внесения информации об оборудовании."""
     token = request.cookies.get("access_token")
@@ -62,7 +62,7 @@ async def get_equipment(response: Response, request: Request) -> Response:
     return templates.TemplateResponse('equipment.html', context)
 
 
-@router.post('/equipment', response_class=HTMLResponse)
+@router.post('/rhu', response_class=HTMLResponse)
 async def equipment_post(
     response: Response,
     request: Request,
