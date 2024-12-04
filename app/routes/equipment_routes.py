@@ -100,13 +100,13 @@ async def equipment_post(
     cabinet_number = cabinet_number.rstrip()
 
     if not controller_number:
-        query_filter = f'ModemCabinetSerial LIKE \'{cabinet_number}%\''
+        query_filter = f'ModemCabinetSerial = \'{cabinet_number}\''
     elif not cabinet_number:
-        query_filter = f'ModemSerial LIKE \'{controller_number}%\''
+        query_filter = f'ModemSerial = \'{controller_number}\''
     else:
         query_filter = (
-            f'(ModemSerial LIKE \'{controller_number}%\' ' +
-            f'OR ModemCabinetSerial LIKE \'{cabinet_number}%\')'
+            f'(ModemSerial = \'{controller_number}\' ' +
+            f'OR ModemCabinetSerial = \'{cabinet_number}\')'
         )
 
     data = execution_query(
