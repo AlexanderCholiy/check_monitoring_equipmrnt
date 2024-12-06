@@ -7,6 +7,7 @@ from fastapi.responses import Response, HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from typing import Optional
 
+
 CURRENT_DIR: str = os.path.dirname(__file__)
 sys.path.append(
     os.path.abspath(os.path.join(CURRENT_DIR, '..', '..', '..'))
@@ -30,7 +31,10 @@ EARTH_RADIUS: int = 6378100
 
 
 @router.get('/rhu', response_class=HTMLResponse)
-async def get_equipment(response: Response, request: Request) -> Response:
+async def get_equipment(
+    response: Response,
+    request: Request
+) -> Response:
     """Страница с формами для внесения информации об оборудовании."""
     token = request.cookies.get("access_token")
 
@@ -47,18 +51,27 @@ async def get_equipment(response: Response, request: Request) -> Response:
             status_code=status.HTTP_303_SEE_OTHER
         )
 
-    context: dict = {
-        'request': request,
+    # Метод pop а не get, чтобы при перезагрузке страницы обнулять данные
+    # в сессии.
+    post_context: Optional[dict] = None
+    if 'equipment_context' in request.session:
+        post_context = request.session.pop('equipment_context')
+
+    get_context: dict = {
         'prefix': prefix,
         'static_url': static_url,
-        'useremail': user['useremail'],
         'db_pole_number': NULL_VALUE,
-        'counter_number_1': NULL_VALUE,
+        'counter_number_1': '',
         'controller_number': '',
         'cabinet_number': '',
         'equipment_status': 'unknown',
         'new_modem_pole': None,
     }
+
+    context = post_context if post_context is not None else get_context
+    context['useremail'] = user['useremail']
+    context['request'] = request
+
     return templates.TemplateResponse('equipment.html', context)
 
 
@@ -66,15 +79,12 @@ async def get_equipment(response: Response, request: Request) -> Response:
 async def equipment_post(
     response: Response,
     request: Request,
-    counter_number_1: str = Form(alias="counter_number_1"),
-    counter_number_2: Optional[str] = Form(
-        alias="counter_number_2", default=NULL_VALUE
-    ),
-    controller_number: str = Form(alias="controller_number"),
+    controller_number: Optional[str] = Form(alias="controller_number"),
     new_modem_pole: Optional[str] = Form(
         alias="new_modem_pole", default=None
     ),
-    cabinet_number: str = Form(alias="cabinet_number")
+    cabinet_number: Optional[str] = Form(alias="cabinet_number"),
+    counter_number_1: Optional[str] = Form(alias="counter_number_1")
 ) -> Response:
     """Обработка формы с POST-запросом."""
     token = request.cookies.get("access_token")
@@ -92,22 +102,28 @@ async def equipment_post(
             status_code=status.HTTP_303_SEE_OTHER
         )
 
-    counter_number_1 = counter_number_1.rstrip()
-    counter_number_2 = counter_number_2.rstrip()
-    controller_number = controller_number.rstrip()
+    if not all((controller_number, cabinet_number, counter_number_1)):
+        if 'equipment_context' in request.session:
+            request.session.pop('equipment_context')
+            return RedirectResponse(
+                url=f"{prefix}/rhu", status_code=status.HTTP_303_SEE_OTHER
+            )
+
+    if controller_number is not None:
+        controller_number = controller_number.rstrip()
+    if cabinet_number is not None:
+        cabinet_number = cabinet_number.rstrip()
+    if counter_number_1 is not None:
+        counter_number_1 = counter_number_1.rstrip()
     if new_modem_pole is not None:
         new_modem_pole = new_modem_pole.rstrip()
-    cabinet_number = cabinet_number.rstrip()
 
-    if not controller_number:
-        query_filter = f'ModemCabinetSerial = \'{cabinet_number}\''
-    elif not cabinet_number:
+    if controller_number:
         query_filter = f'ModemSerial = \'{controller_number}\''
+    elif cabinet_number:
+        query_filter = f'ModemCabinetSerial = \'{cabinet_number}\''
     else:
-        query_filter = (
-            f'(ModemSerial = \'{controller_number}\' ' +
-            f'OR ModemCabinetSerial = \'{cabinet_number}\')'
-        )
+        query_filter = f'CounterID = \'{counter_number_1}\''
 
     data = execution_query(
         f"""
@@ -139,7 +155,7 @@ async def equipment_post(
     nearest_poles_data: Optional[POINTER_POLES] = None
 
     db_pole_number: str = NULL_VALUE
-    counter_number_1: str = NULL_VALUE
+    counter_number_2: Optional[str] = None
     db_new_modem_pole: str = None
 
     if not data:
@@ -242,11 +258,9 @@ async def equipment_post(
                 f'Уточните новый шифр опоры: {new_modem_pole}'
             )
 
-    context: dict = {
-        'request': request,
+    request.session['equipment_context'] = {
         'prefix': prefix,
         'static_url': static_url,
-        'useremail': user['useremail'],
         'db_pole_number': db_pole_number,
         'counter_number_1': counter_number_1,
         'counter_number_2': counter_number_2,
@@ -258,8 +272,11 @@ async def equipment_post(
         'bad_status': bad_status,
         'gps_problem': gps_problem,
         'nearest_poles_data': nearest_poles_data,
-        'new_modem_pole': db_new_modem_pole,
+        'new_modem_pole': new_modem_pole,
         'pole_updated_message': pole_updated_message,
         'good_notification': good_notification,
     }
-    return templates.TemplateResponse('equipment.html', context)
+
+    return RedirectResponse(
+        url=f"{prefix}/rhu", status_code=status.HTTP_303_SEE_OTHER
+    )

@@ -1,0 +1,54 @@
+#rhu-about {
+    margin-top: 60px;
+    position: relative;
+    border-radius: 8px;
+    padding-inline: 30px;
+    padding-top: 15px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow var(--transition-value);
+}
+
+body.dark #rhu-about {
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.list-about {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--light-color);
+    transition: color var(--transition-value);
+}
+
+.list-about h3 {
+    margin-top: 0;
+    color: var(--light-color);
+    transition: color var(--transition-value);
+}
+
+body.dark .list-about h3 {
+    color: var(--dark-color);
+}
+
+
+.list-about li {
+    margin-bottom: 15px;
+}
+
+.list-about li strong {
+    padding-right: 3px;
+    color: var(--light-add-color);
+    transition: color var(--transition-value);
+}
+
+body.dark .list-about li {
+    color: var(--dark-color);
+    transition: color var(--transition-value);
+}
+
+body.dark .list-about li strong {
+    color: var(--dark-add-color);
+}

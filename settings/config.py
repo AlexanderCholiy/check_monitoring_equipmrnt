@@ -12,7 +12,7 @@ class WebSettings:
     """Параметры подключения приложения и настройки безопасности."""
     WEB_HOST: str = os.getenv('WEB_HOST')
     WEB_PORT: int = int(os.getenv('WEB_PORT'))
-    WEB_PREFIX: str = '/equipment'
+    WEB_PREFIX: str = ''
     WEB_STATIC_URL: str = '/equipment-static'
     WEB_SECURITY_SECRET_KEY: str = os.getenv('WEB_SECURITY_SECRET_KEY')
     WEB_MIDDLEWARE_SECRET_KEY: str = os.getenv('WEB_MIDDLEWARE_SECRET_KEY')
@@ -32,6 +32,7 @@ class DbSettings:
     DB_USER: str = os.getenv('DB_USER')
     DB_PSWD: str = os.getenv('DB_PSWD')
     DB_NAME: str = os.getenv('DB_NAME')
+    ODBC_VERSION: int = int(os.getenv('ODBC_VERSION'))
 
 
 db_settings = DbSettings()

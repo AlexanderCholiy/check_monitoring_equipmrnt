@@ -9,6 +9,7 @@ Equipment
 {% block extra_styles %}
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/equipment.css">
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/nearest_poles_table.css">
+<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/rhu_about.css">
 {% endblock %}
 
 {% block body %}    
@@ -19,16 +20,16 @@ Equipment
                 {% if two_counters %}
                     <div class="field-group">
                         <label for="counter-number-1">Первый счётчик:</label>
-                        <input type="text" id="counter-number-1" name="counter_number_1" value="{{ counter_number_1 }}" readonly>
+                        <input type="text" id="counter-number-1" name="counter_number_1" value="{{ counter_number_1 }}" oninput="validateForm()" maxlength="20">
                     </div>
                     <div class="field-group">
                         <label for="counter-number-2">Второй счётчик:</label>
-                        <input type="text" id="counter-number-2" name="counter_number_2" value="{{ counter_number_2 }}" readonly>
+                        <input type="text" id="counter-number-2" name="counter_number_2" value="{{ counter_number_2 }}" oninput="validateForm()" maxlength="20">
                     </div>
                 {% else %}
                     <div class="field-group">
                         <label for="counter-number-1">Номер счётчика:</label>
-                        <input type="text" id="counter-number-1" name="counter_number_1" value="{{ counter_number_1 }}" readonly>
+                        <input type="text" id="counter-number-1" name="counter_number_1" value="{{ counter_number_1 }}" oninput="validateForm()" maxlength="20">
                     </div>
                 {% endif %}
                 <div class="field-group">
@@ -41,14 +42,14 @@ Equipment
                     <label for="db-pole-number">Шифр опоры в БД:</label>
                     <input type="text" id="db-pole-number" name="db_pole_number" value="{{ db_pole_number }}" readonly>
                 </div>
-                {% if not data_problem and (controller_number or cabinet_number) %}
+                {% if not data_problem and (controller_number or cabinet_number or counter_number_1) %}
                     <div class="field-group">
-                        <label for="new-modem-pole">Новый шифр опоры:</label>
+                        <label for="new-modem-pole">Уточнить шифр опоры:</label>
                         <input type="text" id="new-modem-pole" name="new_modem_pole" value="{{ new_modem_pole or '' }}" onchange="toggleInputs(this)" maxlength="20">
                     </div>
                 {% endif %}
             </div>
-            {% if (cabinet_number or controller_number) and not data_problem and not (gps_problem) %}
+            {% if (cabinet_number or controller_number or counter_number_1) and not data_problem and not (gps_problem) %}
                 <table>
                     <caption>Ближайшие опоры:</caption>
                     <thead>
@@ -76,8 +77,8 @@ Equipment
                 <input type="text" id="cabinet-number" name="cabinet_number" value="{{ cabinet_number }}" oninput="validateForm()" maxlength="20">
             </div>
             <div class="status">
-                {% if not cabinet_number and not controller_number %}
-                    <p class="data-error">Введите номер шкафа и/или номер контроллера</p>
+                {% if not cabinet_number and not controller_number and not counter_number_1%}
+                    <p class="data-error">Укажите номер шкафа, номер контроллера или номер счётчика.</p>
                 {% elif data_problem %}
                     <p class="data-error">{{ equipment_status }}</p>
                 {% else %}
@@ -88,7 +89,7 @@ Equipment
                         </span>
                     </p>
                 {% endif %}
-                {% if not data_problem and (controller_number or cabinet_number) %}
+                {% if not data_problem and (controller_number or cabinet_number or counter_number_1) %}
                     <p>
                         <span>GPS:</span>
                         <span class="{% if gps_problem or bad_status %}status-bad{% else %}status-good{% endif %}">
@@ -105,11 +106,39 @@ Equipment
                 <button type="button" id="refresh-button" title="Сбросить" onclick="location.href='{{ prefix }}/rhu'">
                     <i class='bx bx-refresh'></i>
                 </button>
-                <button type="submit" id="submit-button">Отправить</button>
+                <button type="submit" id="submit-button" title="Поиск РЩУ">Отправить</button>
             </div>
         </div>
     </section>
 </form>
+<section id="rhu-about">
+    <ul class="list-about">
+        <h3>Описание:</h3>
+        <li>
+            <strong>1. Поиск РЩУ:</strong>
+            Введите номер контроллера, номер шкафа или номер счётчика для поиска соответствующего распределительного щита
+            (РЩУ) в системе мониторинга.
+        </li>
+        <li>
+            <strong>2. Отображение информации:</strong>
+            Если введенные данные корректны и система содержит соответствующий щит, вы получите информацию о счётчиках,
+            установленных в этом щите, статусе контроллера, наличии GPS-сигнала и привязке к опоре.
+        </li>
+        <li>
+            <strong>3. Уточнение шифра опоры:</strong>
+            Если к щиту не привязана никакая опора или опора привязана не правильно, укажите её в поле "Уточнить шифр опоры". 
+            Достаточно ввести первые 5 символов шифра. При корректном вводе вы получите уведомление в нижней правой части экрана.
+        </li>
+        <li>
+            <strong>4. Определение местоположения:</strong>
+            Если контроллер успешно определил своё местоположение, будут отображены ближайшие к нему опоры.
+        </li>
+        <li>
+            <strong>5. Повторный поиск:</strong>
+            Для поиска других РЩУ обновите страницу <i class='bx bx-refresh'></i> и повторите указанные действия.
+        </li>
+    </ul>
+</section>
 {% endblock %}
 
 {% block extra_scripts %}
