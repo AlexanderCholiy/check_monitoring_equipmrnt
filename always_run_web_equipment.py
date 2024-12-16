@@ -23,7 +23,8 @@ from app.routes import (
 init(autoreset=True)
 
 CURRENT_DIR: str = os.path.dirname(__file__)
-user_loger = write_log_files('users')
+USER_LOG_DIR: str = os.path.join('/', 'var', 'log', 'application-220')
+user_loger = write_log_files('access', USER_LOG_DIR)
 
 app = FastAPI(debug=False, title='MonitoringEquipment', version='1.0')
 app.include_router(authorization_routes.router)
