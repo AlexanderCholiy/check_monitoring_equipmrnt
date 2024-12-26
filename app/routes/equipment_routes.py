@@ -47,7 +47,10 @@ async def get_equipment(
     user = await get_current_user(token)
     if not user:
         return RedirectResponse(
-            url=f'{web_settings.WEB_PREFIX}/authorize?error=пользователь не найден',
+            url=(
+                f'{web_settings.WEB_PREFIX}/authorize' +
+                '?error=пользователь не найден'
+            ),
             status_code=status.HTTP_303_SEE_OTHER
         )
 

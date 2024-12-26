@@ -7,7 +7,6 @@ from uvicorn import Config, Server
 from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.responses import StreamingResponse
 
 from settings.config import web_settings
 from settings.web_log_config import web_log_config
@@ -40,6 +39,7 @@ app.add_middleware(
     secret_key=web_settings.WEB_MIDDLEWARE_SECRET_KEY
 )
 
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     """Получение информации о пользователе и URL."""
@@ -49,9 +49,9 @@ async def log_requests(request: Request, call_next):
     url = request.url.path
     method = request.method
     request_time = datetime.now().strftime('%d/%b/%Y:%H:%M:%S')
-   
+
     response: Response = await call_next(request)
-    
+
     status_code = response.status_code
     referer = request.headers.get('referer', '')
     decoded_referer = unquote(referer)
@@ -60,7 +60,7 @@ async def log_requests(request: Request, call_next):
         f'{request.client.host} - {useremail} [{request_time}] ' +
         f'"{method} {url} HTTP/1.0" {status_code} ' +
         f'"{decoded_referer}" ' +
-        f'"{request.headers.get('user-agent', '')}"'
+        f'"{request.headers.get("user-agent", "")}"'
     )
 
     return response
