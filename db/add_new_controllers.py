@@ -11,7 +11,8 @@ from db.db_conn import execution_query  # noqa: E402
 def add_new_controllers():
     """Добавление новых контроллеров в БД."""
     df = pd.read_excel(
-        os.path.join(CURRENT_DIR, '..', '..', 'NewEquipment.xlsx')
+        os.path.join(CURRENT_DIR, '..', 'data', 'new_equipment.xlsx'),
+        'new_rhu'
     )
     count_df: int = len(df)
 
@@ -26,6 +27,8 @@ def add_new_controllers():
         modem_cabinet_serial: str = str(row.ModemCabinetSerial).strip()
 
         try:
+            if modem_id != '10.28.19.233':
+                continue
             # Добавляем/обновляем данные о новом контроллере:
             execution_query(
                 f"""
@@ -130,9 +133,15 @@ def add_new_controllers():
             )
 
         except Exception:
-            print(f'ошибка при обработке записи {index + 1}')
+            ...
         else:
-            print(f'запись {index + 1} / {count_df} -- обновлена')
+            print(
+                'Обновляем MSys_Modems: ' +
+                f'{round((100*(index + 1) / count_df), 2)}%',
+                end='\r'
+            )
+
+    print()
 
 
 if __name__ == '__main__':
