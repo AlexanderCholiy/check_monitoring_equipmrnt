@@ -251,6 +251,8 @@ async def equipment_post(
                 f'Уточните новый шифр опоры: {new_modem_pole}'
             )
 
+    new_modem_pole = db_new_modem_pole or new_modem_pole
+
     request.session['equipment_context'] = {
         'prefix': prefix,
         'static_url': static_url,
