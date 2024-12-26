@@ -40,14 +40,14 @@ async def get_equipment(
 
     if not token:
         return RedirectResponse(
-            url=f'{prefix}/authorize?error=ваша сессия истекла',
+            url=f'{web_settings.WEB_PREFIX}/authorize',
             status_code=status.HTTP_303_SEE_OTHER
         )
 
     user = await get_current_user(token)
     if not user:
         return RedirectResponse(
-            url=f'{prefix}/authorize?error=пользователь не найден',
+            url=f'{web_settings.WEB_PREFIX}/authorize?error=пользователь не найден',
             status_code=status.HTTP_303_SEE_OTHER
         )
 
@@ -92,13 +92,6 @@ async def equipment_post(
     if not token:
         return RedirectResponse(
             url=f'{prefix}/authorize?error=ваша сессия истекла',
-            status_code=status.HTTP_303_SEE_OTHER
-        )
-
-    user = await get_current_user(token)
-    if not user:
-        return RedirectResponse(
-            url=f'{prefix}/authorize?error=пользователь не найден',
             status_code=status.HTTP_303_SEE_OTHER
         )
 

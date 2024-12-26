@@ -51,7 +51,8 @@ def write_log_files(
 
     file_handler = logging.FileHandler(log_file_path, encoding='utf-8')
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        # '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        '%(message)s'
     )
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
