@@ -7,7 +7,7 @@ from colorama import Fore, Style, init
 
 CURRENT_DIR: str = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.join(CURRENT_DIR, '..')))
-from app.common.generate_pswd import get_password_hash  # noqa: E402
+from app.common.generate_pswd import get_password_hash
 
 init(autoreset=True)
 USERS_FILE_PATH: str = os.path.join(CURRENT_DIR, 'users.csv')
